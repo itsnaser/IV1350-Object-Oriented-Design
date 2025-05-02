@@ -184,11 +184,11 @@ public class View {
 
     // scan flow
     System.out.println("------------------------------");
-    System.out.println("Add 3 items with item id 1");
+    System.out.println("Add 4 items with item id 1");
     printScannedItem(controller.scanItem(1, 4));
 
     System.out.println("------------------------------");
-    System.out.println("Add 1 items with item id 2");
+    System.out.println("Add 5 items with item id 2");
     printScannedItem(controller.scanItem(2, 5));
     System.out.println("------------------------------");
 

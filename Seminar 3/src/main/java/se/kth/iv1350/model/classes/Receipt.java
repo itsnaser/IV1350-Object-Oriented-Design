@@ -47,12 +47,12 @@ public class Receipt {
     for (SaleItemDTO saleItem : sale.saleItems()) {
       ItemDTO item = saleItem.item();
       double price = item.price() * saleItem.quantity() * (1 + (item.VAT() / 100.0));
-      itemsInfo.append(String.format("%-13s", item.description()))
+      itemsInfo.append(String.format("%-9s", item.description()))
           .append(String.format("%5d", saleItem.quantity()))
           .append(" x ")
           .append(String.format("%5.2f    ", item.price() * (1 + (item.VAT() / 100.0))))
-          .append(String.format("%7.2f", price))
-          .append(" SEK")
+          .append(String.format("%8.2f", price))
+          .append(" SEK (incl. VAT)")
           .append("\n");
     }
 
@@ -61,8 +61,8 @@ public class Receipt {
     return "\n------------------" + String.format("%-14s", " Begin receipt") + " ------------------\n" +
         "Time of Sale: " + datetimeFormat.format(sale.datetime()) + "\n\n" +
         itemsInfo.toString() + "\n" +
-        String.format("%-31s", "Discount: ") + String.format("-%5.2f", sale.discount()) + " SEK\n" +
-        String.format("%-32s", "Total VAT: ") + String.format("%5.2f", sale.totalVAT()) + " SEK\n\n" +
+        String.format("%-28s", "Discount: ") + String.format("-%5.2f", sale.discount()) + " SEK\n" +
+        String.format("%-29s", "Total VAT: ") + String.format("%5.2f", sale.totalVAT()) + " SEK\n\n" +
         sale.payment().toString() + "\n" +
         "------------------" + String.format("%-14s", " End receipt") + "------------------\n";
   }

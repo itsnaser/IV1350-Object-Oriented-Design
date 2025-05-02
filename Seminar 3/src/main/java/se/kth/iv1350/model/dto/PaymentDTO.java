@@ -65,8 +65,8 @@ public record PaymentDTO(double totalPrice, double amountPaid, double change) {
 
   @Override
   public String toString() {
-    return String.format("%-29s", "Total(incl. VAT):") + String.format("%8.2f", totalPrice) + " SEK\n" +
-        String.format("%-29s", "Cash:") + String.format("%8.2f", amountPaid) + " SEK\n" +
-        String.format("%-29s", "Change:") + String.format("%8.2f", change) + " SEK";
+    return String.format("%-26s", "Total(incl. VAT):") + String.format("%8.2f", totalPrice) + " SEK\n" +
+        String.format("%-26s", "Cash:") + String.format("%8.2f", amountPaid) + " SEK\n" +
+        String.format("%-26s", "Change:") + String.format("%8.2f", change) + " SEK";
   }
 }
