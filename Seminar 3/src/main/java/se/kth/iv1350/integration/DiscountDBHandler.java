@@ -30,7 +30,7 @@ public class DiscountDBHandler {
     discountList.add(new DiscountDTO(6, -1, 2, -1, 0.0, 10, true)); // 10% customer discount
 
     discountList.add(new DiscountDTO(7, -1, -1, 100, 0.0, 10, true)); // 10% total price discount
-    discountList.add(new DiscountDTO(7, -1, -1, 50, 0.0, 10, true)); // 10% total price discount
+    discountList.add(new DiscountDTO(8, -1, -1, 50, 0.0, 10, true)); // 10% total price discount
   }
 
   /**
