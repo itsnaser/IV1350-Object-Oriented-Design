@@ -1,6 +1,7 @@
 package se.kth.iv1350.view;
 
 import se.kth.iv1350.controller.Controller;
+import se.kth.iv1350.model.dto.ItemDTO;
 
 /**
  * The View class represents the user interface of the application.
@@ -21,22 +22,37 @@ public class View {
   }
 
   /**
+   * Prints information about a scanned item, including its details, the current
+   * total cost
+   * (including VAT), and the total VAT for the sale so far.
+   *
+   * @param item The {@link ItemDTO} representing the item that was just scanned.
+   */
+  private void printScannedItem(ItemDTO item) {
+    System.out.println(item.toString() + "\n");
+    // System.out.println("Total cost (incl VAT): " + String.format("%.2f",
+    // sale.getTotalPrice()) + " SEK");
+    // System.out.println("Total VAT: " + String.format("%.2f", sale.getTotalVAT())
+    // + " SEK" + "\n");
+  }
+
+  /**
    * Simulates basic flow: starts a sale, registers some items, and ends the sale.
    */
   public void basicFlow() {
     // startSale flow
-    System.out.println("Version 1.0.0" + "\n");
+    System.out.println("[basicFlow]" + "\n");
     controller.startNewSale();
     System.out.println("New sale started." + "\n");
 
     // scan flow
     System.out.println("------------------------------");
-    System.out.println("Add 3 items with item id 1");
-    controller.scanItem(1, 1);
+    System.out.println("Add 1 items with item id 1");
+    printScannedItem(controller.scanItem(1, 1));
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    controller.scanItem(2, 1);
+    printScannedItem(controller.scanItem(2, 1));
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.");
@@ -68,14 +84,14 @@ public class View {
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 99");
     try {
-      controller.scanItem(99, 1);
+      printScannedItem(controller.scanItem(99, 1));
     } catch (IllegalArgumentException e) {
       System.err.println("Error: " + e.getMessage() + "\n");
     }
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    controller.scanItem(2, 1);
+    printScannedItem(controller.scanItem(2, 1));
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -103,15 +119,15 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 1");
-    controller.scanItem(1, 1);
+    printScannedItem(controller.scanItem(1, 1));
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    controller.scanItem(2, 1);
+    printScannedItem(controller.scanItem(2, 1));
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 1");
-    controller.scanItem(1, 1);
+    printScannedItem(controller.scanItem(1, 1));
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -139,11 +155,11 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 4 items with item id 1");
-    controller.scanItem(1, 4);
+    printScannedItem(controller.scanItem(1, 4));
 
     System.out.println("------------------------------");
     System.out.println("Add 5 items with item id 2");
-    controller.scanItem(2, 5);
+    printScannedItem(controller.scanItem(2, 5));
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -169,11 +185,11 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 3 items with item id 1");
-    controller.scanItem(1, 4);
+    printScannedItem(controller.scanItem(1, 4));
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    controller.scanItem(2, 5);
+    printScannedItem(controller.scanItem(2, 5));
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");

@@ -74,21 +74,7 @@ public class Controller {
       throw new IllegalArgumentException("Quantity must be greater than zero.");
     }
     sale.addItem(item, quantity);
-    printScannedItem(item);
     return item;
-  }
-
-  /**
-   * Prints information about a scanned item, including its details, the current
-   * total cost
-   * (including VAT), and the total VAT for the sale so far.
-   *
-   * @param item The {@link ItemDTO} representing the item that was just scanned.
-   */
-  private void printScannedItem(ItemDTO item) {
-    System.out.println(item.toString() + "\n");
-    System.out.println("Total cost (incl VAT): " + String.format("%.2f", sale.getTotalPrice()) + " SEK");
-    System.out.println("Total VAT: " + String.format("%.2f", sale.getTotalVAT()) + " SEK" + "\n");
   }
 
   /**
