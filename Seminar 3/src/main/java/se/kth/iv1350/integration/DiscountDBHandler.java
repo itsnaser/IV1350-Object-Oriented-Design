@@ -21,15 +21,15 @@ public class DiscountDBHandler {
    */
   public DiscountDBHandler() {
     this.discountList = new ArrayList<>();
-    discountList.add(new DiscountDTO(1, 1, -1, -1, 0, 10, true)); // 5kr fixed discount
-    discountList.add(new DiscountDTO(2, 2, -1, -1, 0, 10, true)); // 5kr fixed discount
-    discountList.add(new DiscountDTO(3, 3, -1, -1, 0, 10, true)); // 5kr fixed discount
-    discountList.add(new DiscountDTO(4, 4, -1, -1, 0, 10, true)); // 5kr fixed discount
+    discountList.add(new DiscountDTO(1, 1, -1, -1, 0, 10, true)); // 10% item discount
+    discountList.add(new DiscountDTO(2, 2, -1, -1, 0, 10, true)); // 10% item discount
+    discountList.add(new DiscountDTO(3, 3, -1, -1, 0, 10, true)); // 10% item discount
+    discountList.add(new DiscountDTO(4, 4, -1, -1, 0, 10, true)); // 10% item discount
 
     discountList.add(new DiscountDTO(5, -1, 1, -1, 0.0, 10, true)); // 10% customer discount
     discountList.add(new DiscountDTO(6, -1, 2, -1, 0.0, 10, true)); // 10% customer discount
 
-    discountList.add(new DiscountDTO(7, -1, -1, 100, 0.0, 10, true)); // 15% total price discount
+    discountList.add(new DiscountDTO(7, -1, -1, 100, 0.0, 10, true)); // 10% total price discount
     discountList.add(new DiscountDTO(7, -1, -1, 50, 0.0, 10, true)); // 10% total price discount
   }
 
