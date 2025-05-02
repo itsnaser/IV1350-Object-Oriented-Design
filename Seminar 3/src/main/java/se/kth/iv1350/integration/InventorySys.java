@@ -108,7 +108,6 @@ public class InventorySys {
         return inventoryItem.getItem();
       }
     }
-    System.out.println("Item not found in inventory system.");
     return null;
   }
 
