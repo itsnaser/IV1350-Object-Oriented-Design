@@ -212,6 +212,10 @@ public class View {
    * Runs the view logic. This method simulates the user interface.
    */
   public void run() {
+    basicFlow();
+    altFlow_3_4_a();
+    altFlow_3_4_b();
+    altFlow_3_4_c();
     altFlow_9_a();
 
   }
