@@ -62,11 +62,4 @@ public record PaymentDTO(double totalPrice, double amountPaid, double change) {
   public PaymentDTO(double totalPrice, double amountPaid) {
     this(totalPrice, amountPaid, amountPaid - totalPrice); // delegate to canonical
   }
-
-  @Override
-  public String toString() {
-    return String.format("%-26s", "Total(incl. VAT):") + String.format("%8.2f", totalPrice) + " SEK\n" +
-        String.format("%-26s", "Cash:") + String.format("%8.2f", amountPaid) + " SEK\n" +
-        String.format("%-26s", "Change:") + String.format("%8.2f", change) + " SEK";
-  }
 }

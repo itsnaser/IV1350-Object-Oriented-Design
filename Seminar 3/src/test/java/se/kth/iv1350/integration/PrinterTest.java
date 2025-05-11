@@ -41,15 +41,56 @@ class PrinterTest {
   }
 
   @Test
-  void testPrintReceipt_PrintsExpectedOutput() {
-    String receiptString = "Receipt details here";
-    when(mockReceipt.toString()).thenReturn(receiptString);
+  void testPrintReceipt_WithNullSale_PrintsNoSaleInfo() {
+    // Arrange: mock Receipt to return null for getSale()
+    when(mockReceipt.getSale()).thenReturn(null);
 
+    // Act
     printer.printReceipt(mockReceipt);
 
+    // Assert
     String output = outContent.toString();
-    assertTrue(output.contains("Printing receipt..."), "Should print 'Printing receipt...'");
-    assertTrue(output.contains(receiptString), "Should print the receipt's toString()");
+    assertTrue(output.contains("No sale information available."), "Should print message for missing sale info");
+  }
+
+  @Test
+  void testPrintReceipt_WithSale_PrintsFormattedReceipt() {
+    // Arrange: create mocks for SaleDTO, SaleItemDTO, ItemDTO, and payment
+    var mockSale = mock(se.kth.iv1350.model.dto.SaleDTO.class);
+    var mockSaleItem = mock(se.kth.iv1350.model.dto.SaleItemDTO.class);
+    var mockItem = mock(se.kth.iv1350.model.dto.ItemDTO.class);
+    var mockPayment = mock(se.kth.iv1350.model.dto.PaymentDTO.class);
+
+    when(mockReceipt.getSale()).thenReturn(mockSale);
+    when(mockSale.saleItems()).thenReturn(java.util.List.of(mockSaleItem));
+    when(mockSaleItem.item()).thenReturn(mockItem);
+    when(mockSaleItem.quantity()).thenReturn(2);
+    when(mockItem.description()).thenReturn("Milk");
+    when(mockItem.price()).thenReturn(10.0);
+    when(mockItem.VAT()).thenReturn(12);
+    when(mockSale.payment()).thenReturn(mockPayment);
+    when(mockPayment.totalPrice()).thenReturn(22.4);
+    when(mockPayment.amountPaid()).thenReturn(30.0);
+    when(mockPayment.change()).thenReturn(7.6);
+    when(mockSale.discount()).thenReturn(0.0);
+    when(mockSale.totalVAT()).thenReturn(2.4);
+    when(mockSale.datetime()).thenReturn(new java.util.Date(0)); // 1970-01-01 00:00:00
+
+    // Act
+    printer.printReceipt(mockReceipt);
+
+    // Assert
+    String output = outContent.toString();
+    assertTrue(output.contains("Printing receipt..."));
+    assertTrue(output.contains("Milk"), "Should contain item description");
+    assertTrue(output.contains("Total(incl. VAT):"), "Should contain total price label");
+    assertTrue(output.contains("Time of Sale:"), "Should contain time of sale");
+    assertTrue(output.contains("Discount:"), "Should contain discount info");
+    assertTrue(output.contains("Total VAT:"), "Should contain VAT info");
+    assertTrue(output.contains("Cash:"), "Should contain cash info");
+    assertTrue(output.contains("Change:"), "Should contain change info");
+    assertTrue(output.contains("Begin receipt"), "Should contain receipt start delimiter");
+    assertTrue(output.contains("End receipt"), "Should contain receipt end delimiter");
   }
 
   @AfterEach

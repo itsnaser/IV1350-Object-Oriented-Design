@@ -22,6 +22,22 @@ public class View {
   }
 
   /**
+   * Constructs a formatted string containing information about an item.
+   * The information includes the item's ID, description, price (including VAT),
+   * and VAT percentage.
+   *
+   * @param item The {@link ItemDTO} object containing the item's details.
+   * @return A formatted string with the item's ID, description, price including
+   *         VAT, and VAT percentage.
+   */
+  private String constructItemInfo(ItemDTO item) {
+    return "Item ID: " + item.itemID() + "\n" +
+        "Item description: " + item.description() + '\n' +
+        "Item price: " + item.price() * (1 + (item.VAT() / 100)) + " SEK\n" +
+        "VAT: " + item.VAT() + "%";
+  }
+
+  /**
    * Prints information about a scanned item, including its details, the current
    * total cost
    * (including VAT), and the total VAT for the sale so far.
@@ -29,7 +45,7 @@ public class View {
    * @param item The {@link ItemDTO} representing the item that was just scanned.
    */
   private void printScannedItem(ItemDTO item) {
-    System.out.println(item.toString() + "\n");
+    System.out.println(constructItemInfo(item) + "\n");
     // System.out.println("Total cost (incl VAT): " + String.format("%.2f",
     // sale.getTotalPrice()) + " SEK");
     // System.out.println("Total VAT: " + String.format("%.2f", sale.getTotalVAT())

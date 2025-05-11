@@ -40,12 +40,4 @@ public record ItemDTO(int itemID, String description, double price, int VAT) {
       throw new IllegalArgumentException("VAT must be between 0 and 100.");
     }
   }
-
-  @Override
-  public String toString() {
-    return "Item ID: " + itemID + "\n" +
-        "Item description: " + description + '\n' +
-        "Item price: " + price * (1 + (VAT / 100)) + " SEK\n" +
-        "VAT: " + VAT + "%";
-  }
 }

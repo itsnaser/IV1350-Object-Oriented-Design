@@ -60,32 +60,13 @@ class ReceiptTest {
   }
 
   @Test
-  void testToStringContainsSaleItems() {
-    String receiptStr = receipt.toString();
-    assertTrue(receiptStr.contains("Milk"));
-    assertTrue(receiptStr.contains("Bread"));
-    assertTrue(receiptStr.contains("Total VAT"));
-    assertTrue(receiptStr.contains("Total"));
-    assertTrue(receiptStr.contains("Cash"));
-    assertTrue(receiptStr.contains("Change"));
+  void testReceiptConstructorStoresSaleDTO() {
+    assertSame(saleDTO, receipt.getSale(), "Receipt should store the SaleDTO passed to its constructor");
   }
 
   @Test
-  void testToStringContainsDateTime() {
-    String receiptStr = receipt.toString();
-    assertTrue(
-        receiptStr.contains("Time of Sale: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(saleDTO.datetime())));
-  }
-
-  @Test
-  void testToStringWithNullSale() {
+  void testGetSaleReturnsNullWhenConstructedWithNull() {
     Receipt nullReceipt = new Receipt(null);
-    assertEquals("No sale information available.", nullReceipt.toString());
-  }
-
-  @Test
-  void testToStringWithNullDiscounts() {
-    String receiptStr = receipt.toString();
-    assertTrue(receiptStr.contains("- 0,00 SEK"));
+    assertNull(nullReceipt.getSale(), "getSale() should return null if constructed with null");
   }
 }

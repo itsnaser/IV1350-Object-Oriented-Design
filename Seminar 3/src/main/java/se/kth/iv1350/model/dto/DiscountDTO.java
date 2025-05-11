@@ -71,16 +71,4 @@ public record DiscountDTO(
     return percentageDiscount > 0;
   }
 
-  @Override
-  public String toString() {
-    return "DiscountDTO{" +
-        "discountID= " + discountID +
-        ", itemID= " + itemID +
-        ", customerID= " + customerID +
-        ", totalPrice= " + totalPrice +
-        ", fixedDiscount= " + fixedDiscount +
-        ", percentageDiscount= " + percentageDiscount +
-        ", activated= " + activated +
-        '}';
-  }
 }
