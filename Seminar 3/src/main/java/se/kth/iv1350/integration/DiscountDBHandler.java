@@ -13,13 +13,10 @@ import java.util.ArrayList;
  * customers.
  */
 public class DiscountDBHandler {
+  private static DiscountDBHandler instance;
   private List<DiscountDTO> discountList;
 
-  /**
-   * Creates a new {@code DiscountDBHandler} and initializes the discount list
-   * with some example discounts.
-   */
-  public DiscountDBHandler() {
+  private DiscountDBHandler() {
     this.discountList = new ArrayList<>();
     discountList.add(new DiscountDTO(1, 1, -1, -1, 0, 10, true)); // 10% item discount
     discountList.add(new DiscountDTO(2, 2, -1, -1, 0, 10, true)); // 10% item discount
@@ -31,6 +28,19 @@ public class DiscountDBHandler {
 
     discountList.add(new DiscountDTO(7, -1, -1, 100, 0.0, 10, true)); // 10% total price discount
     discountList.add(new DiscountDTO(8, -1, -1, 50, 0.0, 10, true)); // 10% total price discount
+  }
+
+  /**
+   * Returns the singleton instance of {@code DiscountDBHandler}.
+   * Ensures only one instance exists throughout the application.
+   *
+   * @return The singleton instance of {@code DiscountDBHandler}.
+   */
+  public static DiscountDBHandler getInstance() {
+    if (instance == null) {
+      instance = new DiscountDBHandler();
+    }
+    return instance;
   }
 
   /**

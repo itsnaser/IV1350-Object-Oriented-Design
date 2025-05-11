@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import se.kth.iv1350.integration.*;
 import se.kth.iv1350.model.classes.*;
 import se.kth.iv1350.model.dto.*;
-import java.util.Collections;
+import se.kth.iv1350.exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -47,10 +47,14 @@ class ControllerTest {
   @Test
   void testEndSaleReturnsTotalPrice() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    controller.scanItem(1, 2);
-    double total = controller.endSale();
-    assertEquals(Math.round(2 * 10.0 * 1.12 * 100.00) / 100.00, total);
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      controller.scanItem(1, 2);
+      double total = controller.endSale();
+      assertEquals(Math.round(2 * 10.0 * 1.12 * 100.00) / 100.00, total);
+    } catch (Exception e) {
+      fail("Exception was thrown during testEndSaleReturnsTotalPrice: " + e.getMessage());
+    }
   }
 
   @Test
@@ -61,43 +65,60 @@ class ControllerTest {
   @Test
   void testScanItemAddsItemAndReturnsDTO() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    ItemDTO returned = controller.scanItem(1, 1);
-    assertEquals(testItem, returned);
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      ItemDTO returned = controller.scanItem(1, 1);
+      assertEquals(testItem, returned);
+    } catch (Exception e) {
+      fail("Exception was thrown during testScanItemAddsItemAndReturnsDTO: " + e.getMessage());
+    }
   }
 
   @Test
   void testScanItemThrowsIfItemNotFound() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(2)).thenReturn(null);
-    assertThrows(IllegalArgumentException.class, () -> controller.scanItem(2, 1));
+    // Simulate InventorySys throwing ItemNotFoundException when item is not found
+    try {
+      when(mockInventorySys.getItem(2)).thenThrow(new ItemNotFoundException("Item not found"));
+      assertThrows(ItemNotFoundException.class, () -> controller.scanItem(2, 1));
+    } catch (Exception e) {
+      fail("Exception was thrown during testScanItemThrowsIfItemNotFound: " + e.getMessage());
+    }
   }
 
   @Test
   void testScanItemThrowsIfQuantityNotPositive() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    assertThrows(IllegalArgumentException.class, () -> controller.scanItem(1, 0));
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      assertThrows(IllegalArgumentException.class, () -> controller.scanItem(1, 0));
+    } catch (Exception e) {
+      fail("Exception was thrown during testScanItemThrowsIfQuantityNotPositive: " + e.getMessage());
+    }
   }
 
   @Test
   void testSignalDiscountRequestAppliesDiscounts() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    controller.scanItem(1, 1);
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      controller.scanItem(1, 1);
 
-    double discount = 0.0;
-    when(mockDiscountDBHandler.getDiscounts(anyInt()))
-        .thenReturn(discount);
+      double discount = 0.0;
+      when(mockDiscountDBHandler.getDiscounts(anyInt()))
+          .thenReturn(discount);
 
-    Sale sale = controller.signalDiscountRequest(123);
-    assertNotNull(sale);
-    // The sale should have discounts applied and total price should be
-    // ((price * VAT) - discount)
-    double discountedTotal = sale.getTotalPrice();
-    System.out.println("Discounted total: " + discountedTotal);
-    assertTrue(discountedTotal == Math.round(10.0 * 1.12 * 100.00) / 100.00,
-        "Discounted total: " + discountedTotal);
+      Sale sale = controller.signalDiscountRequest(123);
+      assertNotNull(sale);
+      // The sale should have discounts applied and total price should be
+      // ((price * VAT) - discount)
+      double discountedTotal = sale.getTotalPrice();
+      System.out.println("Discounted total: " + discountedTotal);
+      assertTrue(discountedTotal == Math.round(10.0 * 1.12 * 100.00) / 100.00,
+          "Discounted total: " + discountedTotal);
+    } catch (Exception e) {
+      fail("Exception was thrown during testSignalDiscountRequestAppliesDiscounts: " + e.getMessage());
+    }
   }
 
   @Test
@@ -108,11 +129,15 @@ class ControllerTest {
   @Test
   void testSetAmountPaidReturnsCorrectChange() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    controller.scanItem(1, 1);
-    double total = controller.endSale();
-    double change = controller.setAmountPaid(total + 5.0);
-    assertEquals(5.0, change);
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      controller.scanItem(1, 1);
+      double total = controller.endSale();
+      double change = controller.setAmountPaid(total + 5.0);
+      assertEquals(5.0, change);
+    } catch (Exception e) {
+      fail("Exception was thrown during testSetAmountPaidReturnsCorrectChange: " + e.getMessage());
+    }
   }
 
   @Test
@@ -129,12 +154,16 @@ class ControllerTest {
   @Test
   void testCompleteSaleCallsExternalSystems() {
     controller.startNewSale();
-    when(mockInventorySys.getItem(1)).thenReturn(testItem);
-    controller.scanItem(1, 1);
-    controller.completeSale();
+    try {
+      when(mockInventorySys.getItem(1)).thenReturn(testItem);
+      controller.scanItem(1, 1);
+      controller.completeSale();
 
-    verify(mockPrinter, atLeastOnce()).printReceipt(any(Receipt.class));
-    verify(mockAccountingSys, atLeastOnce()).sendSaleInfo(any(SaleDTO.class));
-    verify(mockInventorySys, atLeastOnce()).updateInventory(any(SaleDTO.class));
+      verify(mockPrinter, atLeastOnce()).printReceipt(any(Receipt.class));
+      verify(mockAccountingSys, atLeastOnce()).sendSaleInfo(any(SaleDTO.class));
+      verify(mockInventorySys, atLeastOnce()).updateInventory(any(SaleDTO.class));
+    } catch (Exception e) {
+      fail("Exception was thrown during testCompleteSaleCallsExternalSystems: " + e.getMessage());
+    }
   }
 }

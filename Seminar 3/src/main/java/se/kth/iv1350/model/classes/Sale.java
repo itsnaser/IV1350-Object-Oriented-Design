@@ -9,6 +9,12 @@ import java.util.ArrayList;
 /**
  * Represents a sale, containing information about the items sold, applied
  * discounts, payment, total VAT, and the date and time of the sale.
+ *
+ * <p>
+ * This class manages the sale process, including adding items, applying
+ * discounts,
+ * processing payments, and notifying observers when the sale is completed.
+ * </p>
  */
 public class Sale {
   private List<SaleItem> saleItems;
@@ -16,6 +22,7 @@ public class Sale {
   private double discount;
   private PaymentDTO payment;
   private double totalVAT;
+  private ArrayList<ISaleObserver> saleObservers = new ArrayList<ISaleObserver>();
 
   /**
    * Creates a new {@code Sale}.
@@ -50,31 +57,22 @@ public class Sale {
   }
 
   /**
-   * Applies a fixed discount to the total price.
+   * Applies a discount to the current sale using the specified discount strategy.
+   * The discount amount is calculated based on the total price of the sale and is
+   * added
+   * to the current discount.
    *
-   * @param discount The fixed discount amount to apply.
+   * @param strategy The discount strategy to use for calculating the discount.
    */
-  public void addFixedDiscount(double discount) {
-    if (discount >= getTotalPrice()) {
-      this.discount = getTotalPrice();
-      return;
-    }
-    this.discount += discount;
-  }
-
-  /**
-   * Calculates and applies a percentage discount to the total price.
-   *
-   * @param discount The percentage discount to apply (e.g., 10 for 10%).
-   */
-  public void addPercentageDiscount(double discount) {
-    this.discount += this.getTotalPrice() * discount / 100;
+  public void applyDiscount(IDiscountStrategy strategy) {
+    discount += strategy.applyDiscount(getTotalPrice());
   }
 
   /**
    * Calculates and returns the change to be given to the customer based on the
    * amount paid. Also sets the payment information and the date/time of the sale
-   * if not already set.
+   * if not already set.Notifies all registered sale observers after processing
+   * the payment.
    *
    * @param amountPaid The amount paid by the customer.
    * @return The change to be returned to the customer.
@@ -85,6 +83,7 @@ public class Sale {
       this.payment = new PaymentDTO(totalPrice, amountPaid, amountPaid - totalPrice);
       this.datetime = new Date();
     }
+    notifyObservers();
     return this.payment.change();
   }
 
@@ -131,6 +130,28 @@ public class Sale {
       }
     }
     return null;
+  }
+
+  /**
+   * Notifies all registered sale observers about the completed sale.
+   * Calls {@code updateRevenue} on each observer with the total price of the
+   * sale.
+   *
+   */
+  private void notifyObservers() {
+    for (ISaleObserver observer : saleObservers) {
+      observer.updateRevenue(getTotalPrice());
+    }
+  }
+
+  /**
+   * Adds a list of sale observers that will be notified when the sale is
+   * completed.
+   *
+   * @param observers The list of {@link ISaleObserver} to add.
+   */
+  public void addSaleObservers(ArrayList<ISaleObserver> observers) {
+    saleObservers.addAll(observers);
   }
 
   /**

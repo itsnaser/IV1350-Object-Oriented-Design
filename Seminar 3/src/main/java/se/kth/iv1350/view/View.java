@@ -2,6 +2,11 @@ package se.kth.iv1350.view;
 
 import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.model.dto.ItemDTO;
+import se.kth.iv1350.exceptions.*;
+import se.kth.iv1350.logger.ErrorLogger;
+import se.kth.iv1350.logger.TotalRevenueFileOutput;
+
+import java.io.IOException;
 
 /**
  * The View class represents the user interface of the application.
@@ -10,14 +15,28 @@ import se.kth.iv1350.model.dto.ItemDTO;
  */
 public class View {
   private Controller controller;
+  private ErrorLogger logger;
 
   /**
-   * Creates a new {@code View} with the specified controller and starts the view.
+   * Creates a new instance of the {@code View} class, initializing the controller
+   * and
+   * registering observers for sale events. Also attempts to initialize the error
+   * logger.
+   * If the logger cannot be initialized, an error message is printed to standard
+   * error.
+   * Finally, starts the main execution loop by calling {@code run()}.
    *
    * @param controller The {@link Controller} to be used by this view.
    */
   public View(Controller controller) {
     this.controller = controller;
+    this.controller.addSaleObserver(new TotalRevenueView());
+    this.controller.addSaleObserver(new TotalRevenueFileOutput());
+    try {
+      this.logger = new ErrorLogger();
+    } catch (IOException e) {
+      System.err.println("Could not initialize error logger: " + e.getMessage());
+    }
     run();
   }
 
@@ -42,14 +61,29 @@ public class View {
    * total cost
    * (including VAT), and the total VAT for the sale so far.
    *
-   * @param item The {@link ItemDTO} representing the item that was just scanned.
+   * @param itemID   The ID of the item to be scanned.
+   * @param quantity The quantity of the item to be scanned.
    */
-  private void printScannedItem(ItemDTO item) {
-    System.out.println(constructItemInfo(item) + "\n");
-    // System.out.println("Total cost (incl VAT): " + String.format("%.2f",
-    // sale.getTotalPrice()) + " SEK");
-    // System.out.println("Total VAT: " + String.format("%.2f", sale.getTotalVAT())
-    // + " SEK" + "\n");
+  private void printScannedItem(int itemID, int quantity) {
+    try {
+      ItemDTO item = controller.scanItem(itemID, quantity);
+      System.out.println(constructItemInfo(item) + "\n");
+
+    } catch (ItemNotFoundException e) {
+      // Unchecked exception
+      System.out.println("No item found with ID: " + itemID + ". Please try another Item.");
+
+    } catch (InventoryDatabaseException e) {
+      // Checked exception
+      System.out.println("Could not connect to the inventory database. Please try again later.");
+      if (logger != null)
+        logger.logException(e);
+
+    } catch (Exception e) {
+      System.out.println("An unexpected error occurred: " + e.getMessage());
+      if (logger != null)
+        logger.logException(e);
+    }
   }
 
   /**
@@ -64,11 +98,11 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 1");
-    printScannedItem(controller.scanItem(1, 1));
+    printScannedItem(1, 1);
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    printScannedItem(controller.scanItem(2, 1));
+    printScannedItem(2, 1);
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.");
@@ -99,15 +133,15 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 99");
-    try {
-      printScannedItem(controller.scanItem(99, 1));
-    } catch (IllegalArgumentException e) {
-      System.err.println("Error: " + e.getMessage() + "\n");
-    }
+    printScannedItem(99, 1);
+
+    System.out.println("------------------------------");
+    System.out.println("Add 1 items with item id 69");
+    printScannedItem(69, 1);
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    printScannedItem(controller.scanItem(2, 1));
+    printScannedItem(2, 1);
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -135,15 +169,15 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 1");
-    printScannedItem(controller.scanItem(1, 1));
+    printScannedItem(1, 1);
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 2");
-    printScannedItem(controller.scanItem(2, 1));
+    printScannedItem(2, 1);
 
     System.out.println("------------------------------");
     System.out.println("Add 1 items with item id 1");
-    printScannedItem(controller.scanItem(1, 1));
+    printScannedItem(1, 1);
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -171,11 +205,11 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 4 items with item id 1");
-    printScannedItem(controller.scanItem(1, 4));
+    printScannedItem(1, 4);
 
     System.out.println("------------------------------");
     System.out.println("Add 5 items with item id 2");
-    printScannedItem(controller.scanItem(2, 5));
+    printScannedItem(2, 5);
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -201,11 +235,11 @@ public class View {
     // scan flow
     System.out.println("------------------------------");
     System.out.println("Add 4 items with item id 1");
-    printScannedItem(controller.scanItem(1, 4));
+    printScannedItem(1, 4);
 
     System.out.println("------------------------------");
     System.out.println("Add 5 items with item id 2");
-    printScannedItem(controller.scanItem(2, 5));
+    printScannedItem(2, 5);
     System.out.println("------------------------------");
 
     System.out.println("All Items scanned.\n");
@@ -233,6 +267,5 @@ public class View {
     altFlow_3_4_b();
     altFlow_3_4_c();
     altFlow_9_a();
-
   }
 }

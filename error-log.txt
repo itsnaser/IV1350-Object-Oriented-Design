@@ -1,0 +1,8 @@
+2025-05-11 21:24:26 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
+	at se.kth.iv1350.integration.InventorySys.getItem(InventorySys.java:111)
+	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:93)
+	at se.kth.iv1350.view.View.printScannedItem(View.java:69)
+	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:137)
+	at se.kth.iv1350.view.View.run(View.java:263)
+	at se.kth.iv1350.view.View.<init>(View.java:40)
+	at se.kth.iv1350.startup.Startup.main(Startup.java:26)

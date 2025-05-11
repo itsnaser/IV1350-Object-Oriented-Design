@@ -18,8 +18,8 @@ public class Startup {
   public static void main(String[] args) {
     // Startup flow
     System.out.println("Starting the application..." + "\n");
-    DiscountDBHandler discountDBHandler = new DiscountDBHandler();
-    InventorySys inventorySys = new InventorySys();
+    DiscountDBHandler discountDBHandler = DiscountDBHandler.getInstance(); // Singleton
+    InventorySys inventorySys = InventorySys.getInstance(); // Singleton
     AccountingSys accountingSys = new AccountingSys();
     Printer printer = new Printer();
     Controller controller = new Controller(discountDBHandler, inventorySys, accountingSys, printer);

@@ -53,7 +53,7 @@ class SaleTest {
     sale.addItem(item1, 1); // 10 * 1.12 = 11.2
     sale.addItem(item2, 1); // 20 * 1.06 = 21.2
     DiscountDTO discount = new DiscountDTO(1, 0, 0, 0.0, 5.0, 0, true); // fixed discount
-    sale.addFixedDiscount(discount.fixedDiscount());
+    sale.applyDiscount(new FixedDiscountStrategy(discount.fixedDiscount()));
     double expected = Math.round((11.2 + 21.2 - 5.0) * 100.0) / 100.0;
     assertEquals(expected, sale.getTotalPrice());
   }
@@ -63,7 +63,7 @@ class SaleTest {
     sale.addItem(item1, 1); // 11.2
     sale.addItem(item2, 1); // 21.2
     DiscountDTO discount = new DiscountDTO(2, 0, 0, 0.0, 0.0, 10, true); // 10% percentage discount
-    sale.addPercentageDiscount(discount.percentageDiscount());
+    sale.applyDiscount(new PercentageDiscountStrategy(discount.percentageDiscount()));
     double expected = Math.round(((11.2 + 21.2) * (1 - 0.10)) * 100.0) / 100.0;
     assertEquals(expected, sale.getTotalPrice());
   }
@@ -74,8 +74,8 @@ class SaleTest {
     sale.addItem(item2, 1); // 21.2
     DiscountDTO fixedDiscount = new DiscountDTO(3, 0, 0, 0.0, 5.0, 0, true); // fixed
     DiscountDTO percentageDiscount = new DiscountDTO(4, 0, 0, 0.0, 0.0, 20, true); // 20% percentage
-    sale.addFixedDiscount(fixedDiscount.fixedDiscount());
-    sale.addPercentageDiscount(percentageDiscount.percentageDiscount());
+    sale.applyDiscount(new FixedDiscountStrategy(fixedDiscount.fixedDiscount()));
+    sale.applyDiscount(new PercentageDiscountStrategy(percentageDiscount.percentageDiscount()));
     double subtotal = 22.4 + 21.2 - 5.0;
     double expected = Math.round(subtotal * (1 - 0.20) * 100.0) / 100.0;
     assertEquals(expected, sale.getTotalPrice());
@@ -85,7 +85,7 @@ class SaleTest {
   void testGetTotalPrice_FixedDiscountGreaterThanTotal() {
     sale.addItem(item1, 1); // 11.2
     DiscountDTO discount = new DiscountDTO(5, 0, 0, 0.0, 20.0, 0, true); // fixed discount greater than total
-    sale.addFixedDiscount(discount.fixedDiscount());
+    sale.applyDiscount(new FixedDiscountStrategy(discount.fixedDiscount()));
     assertEquals(0.0, sale.getTotalPrice());
   }
 
@@ -94,8 +94,8 @@ class SaleTest {
     sale.addItem(item1, 1); // 11.2
     DiscountDTO fixedDiscount = new DiscountDTO(6, 0, 0, 0.0, 10.0, 0, true); // fixed
     DiscountDTO percentageDiscount = new DiscountDTO(7, 0, 0, 0.0, 0.0, 90, true); // 90% percentage
-    sale.addFixedDiscount(fixedDiscount.fixedDiscount());
-    sale.addPercentageDiscount(percentageDiscount.percentageDiscount());
+    sale.applyDiscount(new FixedDiscountStrategy(fixedDiscount.fixedDiscount()));
+    sale.applyDiscount(new PercentageDiscountStrategy(percentageDiscount.percentageDiscount()));
     double subtotal = 11.2 - 10.0;
     double expected = Math.round(Math.max(0, subtotal * (1 - 0.90)) * 100.0) / 100.0;
     assertEquals(expected, sale.getTotalPrice());

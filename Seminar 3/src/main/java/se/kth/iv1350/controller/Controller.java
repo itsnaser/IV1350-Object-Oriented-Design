@@ -3,6 +3,9 @@ package se.kth.iv1350.controller;
 import se.kth.iv1350.integration.*;
 import se.kth.iv1350.model.classes.*;
 import se.kth.iv1350.model.dto.*;
+import se.kth.iv1350.exceptions.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +22,7 @@ public class Controller {
   private final AccountingSys accSys;
   private final Printer printer;
   private Sale sale;
+  private ArrayList<ISaleObserver> saleObservers = new ArrayList<ISaleObserver>();
 
   /**
    * Creates a new {@code Controller} with the specified system handlers.
@@ -37,10 +41,29 @@ public class Controller {
   }
 
   /**
-   * Starts a new sale.
+   * Starts a new sale and attaches all registered sale observers to the new sale.
    */
   public void startNewSale() {
     this.sale = new Sale();
+    this.sale.addSaleObservers(saleObservers);
+  }
+
+  /**
+   * Adds a sale observer that will be notified when a sale is completed.
+   *
+   * @param observer The {@link ISaleObserver} to add.
+   */
+  public void addSaleObserver(ISaleObserver observer) {
+    saleObservers.add(observer);
+  }
+
+  /**
+   * Adds a list of sale observers that will be notified when a sale is completed.
+   *
+   * @param observers The list of {@link ISaleObserver} to add.
+   */
+  public void addSaleObservers(List<ISaleObserver> observers) {
+    saleObservers.addAll(observers);
   }
 
   /**
@@ -62,17 +85,14 @@ public class Controller {
    * @param itemID   The unique identifier of the item to scan.
    * @param quantity The quantity of the item to add.
    * @return The {@link ItemDTO} representing the scanned item.
-   * @throws IllegalArgumentException if the item is not found or quantity is not
-   *                                  positive.
+   * @throws ItemNotFoundException      if the item is not found in inventory.
+   * @throws InventoryDatabaseException if the database cannot be called.
+   * @throws IllegalArgumentException   if quantity is not positive.
    */
-  public ItemDTO scanItem(int itemID, int quantity) {
+  public ItemDTO scanItem(int itemID, int quantity) throws ItemNotFoundException {
     ItemDTO item = invSys.getItem(itemID);
-    if (item == null) {
-      throw new IllegalArgumentException("Item not found in inventory.");
-    }
-    if (quantity <= 0) {
+    if (quantity <= 0)
       throw new IllegalArgumentException("Quantity must be greater than zero.");
-    }
     sale.addItem(item, quantity);
     return item;
   }
@@ -93,9 +113,10 @@ public class Controller {
     double itemsDiscounts = dDBHandler.getDiscounts(saleDTO); // fixed discounts
     double totalPriceDiscounts = dDBHandler.getDiscounts(sale.getTotalPrice()); // percentage discounts
 
-    this.sale.addFixedDiscount(itemsDiscounts);
-    this.sale.addPercentageDiscount(customerDiscounts);
-    this.sale.addPercentageDiscount(totalPriceDiscounts);
+    sale.applyDiscount(new FixedDiscountStrategy(itemsDiscounts)); // Strategy
+    sale.applyDiscount(new PercentageDiscountStrategy(customerDiscounts)); // Strategy
+    sale.applyDiscount(new PercentageDiscountStrategy(totalPriceDiscounts)); // Strategy
+
     return sale;
   }
 

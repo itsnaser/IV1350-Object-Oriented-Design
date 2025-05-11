@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import se.kth.iv1350.model.dto.ItemDTO;
 import se.kth.iv1350.model.dto.SaleDTO;
 import se.kth.iv1350.model.dto.SaleItemDTO;
+import se.kth.iv1350.exceptions.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,11 +30,11 @@ class InventorySysTest {
 
   @BeforeEach
   void setUp() {
-    inventorySys = new InventorySys();
+    inventorySys = InventorySys.getInstance();
   }
 
   @Test
-  void testGetItem_ItemExists() {
+  void testGetItem_ItemExists() throws ItemNotFoundException {
     ItemDTO item = inventorySys.getItem(1);
     assertNotNull(item);
     assertEquals(1, item.itemID());
@@ -42,8 +43,12 @@ class InventorySysTest {
 
   @Test
   void testGetItem_ItemDoesNotExist() {
-    ItemDTO item = inventorySys.getItem(999);
-    assertNull(item);
+    assertThrows(ItemNotFoundException.class, () -> inventorySys.getItem(999));
+  }
+
+  @Test
+  void testGetItem_FailedToConnectToDB() {
+    assertThrows(InventoryDatabaseException.class, () -> inventorySys.getItem(69));
   }
 
   @Test
@@ -54,7 +59,7 @@ class InventorySysTest {
   }
 
   @Test
-  void testUpdateInventory_QuantityDecreasesAfterSale() {
+  void testUpdateInventory_QuantityDecreasesAfterSale() throws ItemNotFoundException {
     // Arrange
     ItemDTO item = inventorySys.getItem(1);
     int initialQuantity = inventorySys.getItems().get(0).getQuantity();
@@ -70,7 +75,7 @@ class InventorySysTest {
   }
 
   @Test
-  void testUpdateInventory_MultipleItems() {
+  void testUpdateInventory_MultipleItems() throws ItemNotFoundException {
     ItemDTO apple = inventorySys.getItem(1);
     ItemDTO banana = inventorySys.getItem(2);
     int appleQty = inventorySys.getItems().get(0).getQuantity();

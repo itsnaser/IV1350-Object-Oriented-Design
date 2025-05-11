@@ -37,7 +37,7 @@ class DiscountDBHandlerTest {
 
   @BeforeEach
   void setUp() {
-    discountDBHandler = new DiscountDBHandler();
+    discountDBHandler = DiscountDBHandler.getInstance();
   }
 
   @Test

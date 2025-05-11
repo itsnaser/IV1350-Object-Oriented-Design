@@ -1,5 +1,6 @@
 package se.kth.iv1350.integration;
 
+import se.kth.iv1350.exceptions.*;
 import se.kth.iv1350.model.dto.ItemDTO;
 import se.kth.iv1350.model.dto.SaleDTO;
 import se.kth.iv1350.model.dto.SaleItemDTO;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
  * updating inventory after a sale.
  */
 public class InventorySys {
+  private static InventorySys instance;
   private List<InventoryItem> items;
 
   /**
@@ -61,10 +63,23 @@ public class InventorySys {
   }
 
   /**
+   * Returns the singleton instance of {@code InventorySys}.
+   * Ensures only one instance exists throughout the application.
+   *
+   * @return The singleton instance of {@code InventorySys}.
+   */
+  public static InventorySys getInstance() {
+    if (instance == null) {
+      instance = new InventorySys();
+    }
+    return instance;
+  }
+
+  /**
    * Creates a new {@code InventorySys} and initializes the inventory with some
    * items.
    */
-  public InventorySys() {
+  private InventorySys() {
     this.items = new ArrayList<>();
     items.add(new InventoryItem(new ItemDTO(1, "Apple", 10.00, 25), 34));
     items.add(new InventoryItem(new ItemDTO(2, "Banana", 20.00, 25), 57));
@@ -100,15 +115,22 @@ public class InventorySys {
    * @param itemId The unique identifier of the item to fetch.
    * @return The {@link ItemDTO} containing information about the item, or
    *         {@code null} if not found.
+   * @throws ItemNotFoundException      if the item is not found in the inventory.
+   * @throws InventoryDatabaseException if the database cannot be called.
    */
-  public ItemDTO getItem(int itemId) {
+  public ItemDTO getItem(int itemId) throws ItemNotFoundException,
+      InventoryDatabaseException {
+    // Simulate database failure for itemID 42
+    if (itemId == 69) {
+      throw new InventoryDatabaseException("Failed to connect to the server: Server is down or unreachable.");
+    }
     System.out.println("Fetching item information from inventory system...");
     for (InventoryItem inventoryItem : items) {
       if (inventoryItem.getItem().itemID() == itemId) {
         return inventoryItem.getItem();
       }
     }
-    return null;
+    throw new ItemNotFoundException("Item with ID " + itemId + " was not found in the inventory.");
   }
 
   /**
