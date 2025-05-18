@@ -1,25 +1,18 @@
-2025-05-11 21:24:26 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
-	at se.kth.iv1350.integration.InventorySys.getItem(InventorySys.java:111)
-	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:93)
-	at se.kth.iv1350.view.View.printScannedItem(View.java:69)
-	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:137)
-	at se.kth.iv1350.view.View.run(View.java:263)
-	at se.kth.iv1350.view.View.<init>(View.java:40)
-	at se.kth.iv1350.startup.Startup.main(Startup.java:26)2025-05-12 17:27:02 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
+2025-05-17 22:09:45 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
 	at se.kth.iv1350.integration.InventorySys.getItem(InventorySys.java:125)
 	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:93)
-	at se.kth.iv1350.view.View.printScannedItem(View.java:69)
-	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:140)
-	at se.kth.iv1350.view.View.run(View.java:266)
-	at se.kth.iv1350.view.View.<init>(View.java:40)
-	at se.kth.iv1350.startup.Startup.main(Startup.java:26)
+	at se.kth.iv1350.view.View.printScannedItem(View.java:64)
+	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:135)
+	at se.kth.iv1350.view.View.run(View.java:261)
+	at se.kth.iv1350.view.View.<init>(View.java:35)
+	at se.kth.iv1350.startup.Startup.main(Startup.java:32)
 
-2025-05-12 17:30:55 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
+2025-05-17 22:20:35 - InventoryDatabaseException: Failed to connect to the server: Server is down or unreachable.
 	at se.kth.iv1350.integration.InventorySys.getItem(InventorySys.java:125)
 	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:93)
-	at se.kth.iv1350.view.View.printScannedItem(View.java:69)
-	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:140)
-	at se.kth.iv1350.view.View.run(View.java:266)
-	at se.kth.iv1350.view.View.<init>(View.java:40)
-	at se.kth.iv1350.startup.Startup.main(Startup.java:26)
+	at se.kth.iv1350.view.View.printScannedItem(View.java:64)
+	at se.kth.iv1350.view.View.altFlow_3_4_a(View.java:135)
+	at se.kth.iv1350.view.View.run(View.java:261)
+	at se.kth.iv1350.view.View.<init>(View.java:35)
+	at se.kth.iv1350.startup.Startup.main(Startup.java:32)
 

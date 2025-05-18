@@ -6,8 +6,6 @@ import se.kth.iv1350.exceptions.*;
 import se.kth.iv1350.logger.ErrorLogger;
 import se.kth.iv1350.logger.TotalRevenueFileOutput;
 
-import java.io.IOException;
-
 /**
  * The View class represents the user interface of the application.
  * It interacts with the {@link Controller} to perform operations and display
@@ -27,16 +25,13 @@ public class View {
    * Finally, starts the main execution loop by calling {@code run()}.
    *
    * @param controller The {@link Controller} to be used by this view.
+   * @param logger     The {@link ErrorLogger} to log errors.
    */
-  public View(Controller controller) {
+  public View(Controller controller, ErrorLogger logger) {
+    this.logger = logger;
     this.controller = controller;
     this.controller.addSaleObserver(new TotalRevenueView());
     this.controller.addSaleObserver(new TotalRevenueFileOutput());
-    try {
-      this.logger = new ErrorLogger();
-    } catch (IOException e) {
-      System.err.println("Could not initialize error logger: " + e.getMessage());
-    }
     run();
   }
 
